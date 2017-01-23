@@ -69,3 +69,31 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+fos_rest:
+    body_listener: true
+    view:
+      view_response_listener: true
+    serializer:
+        serialize_null: true
+    body_converter:
+        enabled: true
+    format_listener:
+        rules:
+            - { path: '^/api',  priorities: ['json'], fallback_format: json,  prefer_extension: true }
+
+jms_serializer:
+    property_naming:
+        separator:  _
+        lower_case: true
+
+    metadata:
+        cache: file
+        debug: "%kernel.debug%"
+        file_cache:
+            dir: "%kernel.cache_dir%/serializer"
+        directories:
+            ApiBundle:
+                namespace_prefix: ApiBundle
+                path: %kernel.root_dir%/config/serializer/ApiBundle
+        auto_detection: true
