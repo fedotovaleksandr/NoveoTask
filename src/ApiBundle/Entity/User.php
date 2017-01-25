@@ -5,15 +5,12 @@ namespace ApiBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
-use JMS\Serializer\Annotation\Expose;
-use JMS\Serializer\Annotation\ExclusionPolicy;
 
 /**
  * User
  *
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="ApiBundle\Repository\UserRepository")
- * @ExclusionPolicy("all")
  */
 class User
 {
@@ -23,7 +20,6 @@ class User
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Expose
      */
     private $id;
 
@@ -31,7 +27,6 @@ class User
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
-     * @Expose
      */
     private $email;
 
@@ -39,7 +34,6 @@ class User
      * @var string
      *
      * @ORM\Column(name="lastName", type="string", length=255)
-     * @Expose
      */
     private $lastName;
 
@@ -47,7 +41,6 @@ class User
      * @var string
      *
      * @ORM\Column(name="firstName", type="string", length=255)
-     * @Expose
      */
     private $firstName;
 
@@ -55,7 +48,6 @@ class User
      * @var bool
      *
      * @ORM\Column(name="state", type="boolean")
-     * @Expose
      */
     private $state;
 
@@ -63,7 +55,6 @@ class User
      * @var \DateTime
      *
      * @ORM\Column(name="creationDate", type="datetime")
-     * @Expose
      */
     private $creationDate;
 
@@ -72,7 +63,6 @@ class User
      *
      * @ORM\ManyToMany(targetEntity="UserGroup", inversedBy="users",cascade={"persist"})
      * @ORM\JoinTable(name="users_groups")
-     * @Expose
      */
     private $groups;
 

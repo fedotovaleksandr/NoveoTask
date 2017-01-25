@@ -1,18 +1,25 @@
 ApiBundle\Entity\User:
     exclusion_policy: ALL
-    group: user
     properties:
         id:
             expose: true
+            groups: ['user','user_group']
         email:
             expose: true
+            groups: ['user']
         firstName:
             expose: true
+            groups: ['user']
         lastName:
             expose: true
+            groups: ['user']
         state:
             expose: true
+            groups: ['user']
         creationDate:
             expose: true
+            groups: ['user']
         groups:
             expose: true
+            groups: ['user']
+            type: 'ArrayCollection<ApiBundle\Entity\UserGroup>'

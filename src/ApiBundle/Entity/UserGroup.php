@@ -4,15 +4,12 @@ namespace ApiBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Expose;
-use JMS\Serializer\Annotation\ExclusionPolicy;
 
 /**
  * UserGroup
  *
  * @ORM\Table(name="user_group")
  * @ORM\Entity(repositoryClass="ApiBundle\Repository\UserGroupRepository")
- * @ExclusionPolicy("all")
  */
 class UserGroup
 {
@@ -22,7 +19,6 @@ class UserGroup
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Expose
      */
     private $id;
 
@@ -30,14 +26,12 @@ class UserGroup
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * @Expose
      */
     private $name;
 
     /**
      * @var ArrayCollection
      * @ORM\ManyToMany(targetEntity="User", mappedBy="groups",cascade={"persist"})
-     * @Expose
      */
     private $users;
 

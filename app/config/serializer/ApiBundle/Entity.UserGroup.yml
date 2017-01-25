@@ -1,8 +1,12 @@
 ApiBundle\Entity\UserGroup:
     exclusion_policy: ALL
-    group: user_group
     properties:
         id:
             expose: true
+            groups: ['user','user_group']
         name:
             expose: true
+            groups: ['user_group']
+        users:
+            expose: true
+            groups: ['user_group']
