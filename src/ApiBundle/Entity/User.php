@@ -47,9 +47,9 @@ class User
     /**
      * @var bool
      *
-     * @ORM\Column(name="state", type="boolean")
+     * @ORM\Column(name="state", type="boolean" , options={"default" : false})
      */
-    private $state;
+    private $state=false;
 
     /**
      * @var \DateTime
