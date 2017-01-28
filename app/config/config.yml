@@ -96,5 +96,5 @@ jms_serializer:
         directories:
             ApiBundle:
                 namespace_prefix: ApiBundle
-                path: %kernel.root_dir%/config/serializer/ApiBundle
+                path: '%kernel.root_dir%/config/serializer/ApiBundle'
         auto_detection: true
