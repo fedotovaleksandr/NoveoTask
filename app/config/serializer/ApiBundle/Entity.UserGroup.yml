@@ -3,10 +3,14 @@ ApiBundle\Entity\UserGroup:
     properties:
         id:
             expose: true
+            serialized_name: 'id'
             groups: ['user','user_group']
         name:
             expose: true
+            serialized_name: 'name'
             groups: ['user_group']
         users:
             expose: true
+            maxdepth: 1
+            serialized_name: 'users'
             groups: ['user_group']

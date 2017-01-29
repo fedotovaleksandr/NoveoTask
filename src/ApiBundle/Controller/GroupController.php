@@ -6,6 +6,7 @@ use ApiBundle\Entity\UserGroup;
 use ApiBundle\Event\GroupEvent;
 use ApiBundle\Event\GroupEvents;
 use ApiBundle\Form\UserGroupType;
+use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\FOSRestController;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -19,19 +20,20 @@ class GroupController extends FOSRestController
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      * @Rest\View(serializerGroups={"user_group"})
-     * @Rest\Get("/fetch/")
+     * @Rest\Get("/fetch", name="_group")
      */
-    public function getGroupsAction()
+    public function fetchAction()
     {
-        $groupService = $this->get('api.service.group_service');
+        $groupService = $this->get('api.service.group.service');
         if ($this->getParameter('app.use_cache')) {
-            $cacheItem = $this->get('app.cache')->getItem($groupService->getUserCacheKey(0));
+            $cacheItem = $this->get('app.cache')->getItem($groupService->getGroupCacheKey('all'));
             if ($cacheItem->isHit()) {
                 return new Response($cacheItem->get());
             }
         }
         $groups = $this->get('api.user_group_repository')->findAll();
         $view = $this->view($groups, 200);
+        $view->setContext((new Context())->setGroups(['user_group']));
         $response = $this->handleView($view);
         if ($this->getParameter('app.use_cache')) {
             /**
@@ -49,12 +51,12 @@ class GroupController extends FOSRestController
     /**
      *
      * @Rest\View(serializerGroups={"user_group"})
-     * @Rest\Post("/create/")
+     * @Rest\Post("/create", name="_group")
      * @param Request $request
      *
      * @return \FOS\RestBundle\View\View
      */
-    public function postGroupCreateAction(Request $request)
+    public function createAction(Request $request)
     {
 
         $form = $this->createForm(UserGroupType::class);
@@ -76,13 +78,13 @@ class GroupController extends FOSRestController
      *
      * @return Response
      * @Rest\View(serializerGroups={"user_group"})
-     * @Rest\Get("/{id}/", name="_info")
+     * @Rest\Get("/{id}/", name="_group")
      */
-    public function getGrouAction($id)
+    public function groupAction($id)
     {
-        $groupService = $this->get('api.service.group_service');
+        $groupService = $this->get('api.service.group.service');
         if ($this->getParameter('app.use_cache')) {
-            $cacheItem = $this->get('app.cache')->getItem($groupService->getUserCacheKey($id));
+            $cacheItem = $this->get('app.cache')->getItem($groupService->getGroupCacheKey($id));
             if ($cacheItem->isHit()) {
                 return new Response($cacheItem->get());
             }
@@ -92,6 +94,7 @@ class GroupController extends FOSRestController
             return new JsonResponse(['message' => 'Group not found'], 404);
         }
         $view = $this->view($group, 200);
+        $view->setContext((new Context())->setGroups(['user_group']));
         $response = $this->handleView($view);
         if ($this->getParameter('app.use_cache')) {
             $cacheItem->set($response->getContent())
@@ -107,9 +110,9 @@ class GroupController extends FOSRestController
      *
      * @return \FOS\RestBundle\View\View
      * @Rest\View(serializerGroups={"user_group"})
-     * @Rest\Patch("/{id}/", name="_update")
+     * @Rest\Patch("/{id}/", name="_group")
      */
-    public function postGroupAction(UserGroup $group)
+    public function updateAction(UserGroup $group)
     {
         $form = $this->createForm(UserGroupType::class,$group);
 

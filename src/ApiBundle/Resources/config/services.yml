@@ -1,14 +1,11 @@
 services:
-#    api.example:
-#        class: ApiBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
     api.user_repository:
-            class: Doctrine\ORM\EntityRepository
+            class: ApiBundle\Repository\UserRepository
             factory: ['@doctrine.orm.default_entity_manager', getRepository]
             arguments:
                 - ApiBundle\Entity\User
     api.user_group_repository:
-            class: Doctrine\ORM\EntityRepository
+            class: ApiBundle\Repository\UserGroupRepository
             factory: ['@doctrine.orm.default_entity_manager', getRepository]
             arguments:
                 - ApiBundle\Entity\UserGroup
@@ -17,19 +14,19 @@ services:
             arguments: ['@doctrine.orm.entity_manager']
             tags:
                 - { name: form.type, alias: entity }
-    api.service.user_service:
-    	class: ApiBundle\Service\UserService
-    	arguments: ['@app.cache']
-    api.service.group_service:
-    	class: ApiBundle\Service\GroupService
-    	arguments: ['@app.cache']
+    api.service.user.service:
+            class: ApiBundle\Service\UserService
+            arguments: ['@app.cache','%app.use_cache%']
+    api.service.group.service:
+            class: ApiBundle\Service\GroupService
+            arguments: ['@app.cache','%app.use_cache%']
     api.subscriber.user:
-        class: ApiBundle\EventListener\UserEventSubscriber
-        arguments: ['@api.service.user_service']
-        tags:
-                - { name: event_dispather.event_subscriber }
+            class: ApiBundle\EventListener\UserEventSubscriber
+            arguments: ['@api.service.user.service']
+            tags:
+            - { name: event_dispather.event_subscriber }
     api.subscriber.group:
-        class: ApiBundle\EventListener\GroupEventSubscriber
-        arguments: ['@api.service.group_service']
-        tags:
-             - { name: event_dispather.event_subscriber }
+            class: ApiBundle\EventListener\GroupEventSubscriber
+            arguments: ['@api.service.group.service']
+            tags:
+            - { name: event_dispather.event_subscriber }

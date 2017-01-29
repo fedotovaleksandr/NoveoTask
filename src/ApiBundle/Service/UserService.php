@@ -17,21 +17,26 @@ class UserService
      * @var TagAwareAdapterInterface
      */
     private $cache;
+    private $useCache;
 
     /**
      * UserService constructor.
      *
      * @param TagAwareAdapterInterface $cache
+     * @param $useCache
      */
-    public function __construct(TagAwareAdapterInterface $cache)
+    public function __construct(TagAwareAdapterInterface $cache,$useCache)
     {
         $this->cache = $cache;
+        $this->useCache = $useCache;
     }
 
     public function clearUserCache(User $user)
     {
+        if ($this->useCache) {
        $this->cache->deleteItem($this->getUserCacheKey($user->getId()));
        $this->cache->invalidateTags($this->getUserCacheTags());
+        }
 
     }
 

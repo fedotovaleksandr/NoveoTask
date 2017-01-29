@@ -6,6 +6,7 @@ use ApiBundle\Entity\User;
 use ApiBundle\Event\UserEvent;
 use ApiBundle\Event\UserEvents;
 use ApiBundle\Form\UserType;
+use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,19 +19,20 @@ class UserController extends FOSRestController
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      * @Rest\View(serializerGroups={"user"})
-     * @Rest\Get("/fetch/")
+     * @Rest\Get("/fetch", name="_user")
      */
-    public function getUsersAction()
+    public function fetchAction()
     {
-        $userService = $this->get('api.service.user_service');
+        $userService = $this->get('api.service.user.service');
         if ($this->getParameter('app.use_cache')) {
-            $cacheItem = $this->get('app.cache')->getItem($userService->getUserCacheKey(0));
+            $cacheItem = $this->get('app.cache')->getItem($userService->getUserCacheKey('all'));
             if ($cacheItem->isHit()) {
                 return new Response($cacheItem->get());
             }
         }
         $users = $this->get('api.user_repository')->findAll();
         $view = $this->view($users, 200);
+        $view->setContext((new Context())->setGroups(['user']));
         $response = $this->handleView($view);
         if ($this->getParameter('app.use_cache')) {
             /**
@@ -48,9 +50,12 @@ class UserController extends FOSRestController
     /**
      *
      * @Rest\View(serializerGroups={"user"})
-     * @Rest\Post("/create/")
+     * @Rest\Post("/create", name="_user")
+     * @param Request $request
+     *
+     * @return \FOS\RestBundle\View\View
      */
-    public function postUsersCreateAction(Request $request)
+    public function createAction(Request $request)
     {
 
         $form = $this->createForm(UserType::class);
@@ -70,11 +75,11 @@ class UserController extends FOSRestController
     /**
      * @return Response
      * @Rest\View(serializerGroups={"user"})
-     * @Rest\Get("/{id}/", name="_info")
+     * @Rest\Get("/{id}/", name="_user")
      */
-    public function getUserAction($id)
+    public function userAction($id)
     {
-        $userService = $this->get('api.service.user_service');
+        $userService = $this->get('api.service.user.service');
         if ($this->getParameter('app.use_cache')) {
             $cacheItem = $this->get('app.cache')->getItem($userService->getUserCacheKey($id));
             if ($cacheItem->isHit()) {
@@ -86,8 +91,12 @@ class UserController extends FOSRestController
             return new JsonResponse(['message' => 'User not found'], 404);
         }
         $view = $this->view($user, 200);
+        $view->setContext((new Context())->setGroups(['user']));
         $response = $this->handleView($view);
         if ($this->getParameter('app.use_cache')) {
+            /**
+             * @var $cacheItem CacheItem
+             */
             $cacheItem->set($response->getContent())
                 ->expiresAfter($this->getParameter('app.cache_ttl'));
             $this->get('app.cache')->save($cacheItem);
@@ -101,9 +110,9 @@ class UserController extends FOSRestController
      *
      * @return \FOS\RestBundle\View\View
      * @Rest\View(serializerGroups={"user"})
-     * @Rest\Patch("/{id}/", name="_update")
+     * @Rest\Patch("/{id}/", name="_user")
      */
-    public function postUserAction(User $user)
+    public function updateAction(User $user)
     {
         $form = $this->createForm(UserType::class, $user);
 

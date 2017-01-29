@@ -32,5 +32,3 @@ monolog:
 
 #swiftmailer:
 #    delivery_address: me@example.com
-parameters:
-    app.use_cache: false

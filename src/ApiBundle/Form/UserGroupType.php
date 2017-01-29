@@ -7,10 +7,6 @@ use ApiBundle\Entity\UserGroup;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Constrains;
 
@@ -24,10 +20,10 @@ class UserGroupType extends AbstractType
                 'constraints'=>[
                     new Constrains\Length([
                         'max'=>256,
-                        'maxMessage'=>'Mail max lenght only 255 symbols'
+                        'maxMessage'=>'Name max lenght only 255 symbols'
                     ])
                 ]])
-            ->add('groups', EntityType::class, [
+            ->add('users', EntityType::class, [
                 'class'=>User::class,
                 'invalid_message'=>"values must be integer or Some of users not found"
             ]);

@@ -3,23 +3,31 @@ ApiBundle\Entity\User:
     properties:
         id:
             expose: true
+            serialized_name: 'id'
             groups: ['user','user_group']
         email:
             expose: true
+            serialized_name: 'email'
             groups: ['user']
         firstName:
             expose: true
+            serialized_name: 'firstName'
             groups: ['user']
         lastName:
             expose: true
+            serialized_name: 'lastName'
             groups: ['user']
         state:
             expose: true
+            serialized_name: 'state'
             groups: ['user']
         creationDate:
             expose: true
+            serialized_name: 'creationDate'
             groups: ['user']
         groups:
             expose: true
+            maxdepth: 1
+            serialized_name: 'groups'
             groups: ['user']
             type: 'ArrayCollection<ApiBundle\Entity\UserGroup>'

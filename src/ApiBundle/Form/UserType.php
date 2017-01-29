@@ -5,12 +5,9 @@ namespace ApiBundle\Form;
 use ApiBundle\Entity\User;
 use ApiBundle\Entity\UserGroup;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Constrains;
@@ -56,11 +53,10 @@ class UserType extends AbstractType
                 'required' => 0,
             ])
             ->add('creationDate', DateTimeType::class, [
-                'invalid_message' => "Format date " . \DateTime::ATOM,
+                'invalid_message' => "Format date " . DateTimeType::HTML5_FORMAT,
                 'required' => false,
                 'widget' => 'single_text',
-                'format' => \DateTime::ATOM,
-                'date_format' => \DateTime::ATOM
+                'format' => DateTimeType::HTML5_FORMAT,
             ])
             ->add('groups', EntityType::class, [
                 'class'=>UserGroup::class,

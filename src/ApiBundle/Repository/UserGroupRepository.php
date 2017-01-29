@@ -2,6 +2,8 @@
 
 namespace ApiBundle\Repository;
 
+use Doctrine\ORM\Query;
+
 /**
  * UserGroupRepository
  *
@@ -10,4 +12,14 @@ namespace ApiBundle\Repository;
  */
 class UserGroupRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getRandomGroups($count = 1, $hydration = Query::HYDRATE_OBJECT)
+    {
+        $totalRowsTable = $this->createQueryBuilder('g')->select('count(g.id)')->getQuery()->getSingleScalarResult();
+        return $this->createQueryBuilder('g')
+            ->select('g')
+            ->setMaxResults($count)
+            ->setFirstResult(rand(0, $totalRowsTable - $count - 1))
+            ->getQuery()
+            ->getResult($hydration);
+    }
 }

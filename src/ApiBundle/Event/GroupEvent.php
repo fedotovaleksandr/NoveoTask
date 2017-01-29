@@ -10,8 +10,9 @@ namespace ApiBundle\Event;
 
 
 use ApiBundle\Entity\UserGroup;
+use Symfony\Component\EventDispatcher\Event;
 
-class GroupEvent
+class GroupEvent extends Event
 {
     /**
      * @var UserGroup

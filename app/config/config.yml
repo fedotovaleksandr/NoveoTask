@@ -85,8 +85,8 @@ fos_rest:
 
 jms_serializer:
     property_naming:
-        separator:  _
-        lower_case: true
+        separator:  ''
+        lower_case: false
 
     metadata:
         cache: file

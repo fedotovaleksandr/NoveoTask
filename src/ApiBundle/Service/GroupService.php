@@ -23,16 +23,19 @@ class GroupService
      * GroupService constructor.
      *
      * @param TagAwareAdapterInterface $cache
+     * @param $useCache
      */
-    public function __construct(TagAwareAdapterInterface $cache)
+    public function __construct(TagAwareAdapterInterface $cache, $useCache)
     {
         $this->cache = $cache;
     }
 
     public function clearGroupCache(UserGroup $group)
     {
-        $this->cache->deleteItem($this->getGroupCacheKey($group->getId()));
-        $this->cache->invalidateTags($this->getGroupCacheTags());
+        if ($this->useCache) {
+            $this->cache->deleteItem($this->getGroupCacheKey($group->getId()));
+            $this->cache->invalidateTags($this->getGroupCacheTags());
+        }
 
     }
 
@@ -42,10 +45,10 @@ class GroupService
         return "group_{$groupId}";
     }
 
-    public function getGroupCacheTags($param=null)
+    public function getGroupCacheTags($param = null)
     {
-        $tags = ['fetch'=>'user_tag_fetch'];
-        if (!$param || !isset($tags[$param])){
+        $tags = ['fetch' => 'user_tag_fetch'];
+        if (!$param || !isset($tags[$param])) {
             return array_values($tags);
         }
         return $tags[$param];
