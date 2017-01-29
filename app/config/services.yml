@@ -4,6 +4,16 @@ parameters:
 #    parameter_name: value
 
 services:
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    app.redis:
+        class: Redis
+        calls:
+            - [connect, ["%redis.host%", "%redis.port%"]]
+            - [select, ["%redis.db_number%"]]
+
+    app.redis.adapter:
+        class: Symfony\Component\Cache\Adapter\RedisAdapter
+        arguments: ["@app.redis"]
+
+    app.cache:
+        class: Symfony\Component\Cache\Adapter\TagAwareAdapter
+        arguments: ["@app.redis.adapter","@app.redis.adapter"]

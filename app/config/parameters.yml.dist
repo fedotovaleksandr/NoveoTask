@@ -19,3 +19,9 @@ parameters:
     secret:            ThisTokenIsNotSoSecretChangeIt
 
     #fixture data
+
+     redis.host: localhost
+     redis.port: 6379
+     redis.db_number: 0 # between 0 and 42
+     app.use_cache: true
+     app.cache_ttl: 600

@@ -17,3 +17,19 @@ services:
             arguments: ['@doctrine.orm.entity_manager']
             tags:
                 - { name: form.type, alias: entity }
+    api.service.user_service:
+    	class: ApiBundle\Service\UserService
+    	arguments: ['@app.cache']
+    api.service.group_service:
+    	class: ApiBundle\Service\GroupService
+    	arguments: ['@app.cache']
+    api.subscriber.user:
+        class: ApiBundle\EventListener\UserEventSubscriber
+        arguments: ['@api.service.user_service']
+        tags:
+                - { name: event_dispather.event_subscriber }
+    api.subscriber.group:
+        class: ApiBundle\EventListener\GroupEventSubscriber
+        arguments: ['@api.service.group_service']
+        tags:
+             - { name: event_dispather.event_subscriber }

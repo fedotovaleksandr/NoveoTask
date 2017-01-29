@@ -3,24 +3,47 @@
 namespace ApiBundle\Controller;
 
 use ApiBundle\Entity\UserGroup;
+use ApiBundle\Event\GroupEvent;
+use ApiBundle\Event\GroupEvents;
 use ApiBundle\Form\UserGroupType;
 use FOS\RestBundle\Controller\FOSRestController;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\Cache\CacheItem;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class GroupController extends FOSRestController
 {
     /**
-     * @return \FOS\RestBundle\View\View
+     * @return \Symfony\Component\HttpFoundation\Response
      * @Rest\View(serializerGroups={"user_group"})
      * @Rest\Get("/fetch/")
      */
     public function getGroupsAction()
     {
+        $groupService = $this->get('api.service.group_service');
+        if ($this->getParameter('app.use_cache')) {
+            $cacheItem = $this->get('app.cache')->getItem($groupService->getUserCacheKey(0));
+            if ($cacheItem->isHit()) {
+                return new Response($cacheItem->get());
+            }
+        }
         $groups = $this->get('api.user_group_repository')->findAll();
         $view = $this->view($groups, 200);
-        return $view;
+        $response = $this->handleView($view);
+        if ($this->getParameter('app.use_cache')) {
+            /**
+             * @var $cacheItem CacheItem
+             */
+            $cacheItem->set($response->getContent())
+                ->tag($groupService->getGroupCacheTags('fetch'))
+                ->expiresAfter($this->getParameter('app.cache_ttl'));
+            $this->get('app.cache')->save($cacheItem);
+        }
+
+        return $response;
     }
 
     /**
@@ -41,6 +64,7 @@ class GroupController extends FOSRestController
             $em = $this->getDoctrine()->getManager();
             $em->persist($group);
             $em->flush();
+            $this->get('event_dispatcher')->dispatch(GroupEvents::AFTER_GROUP_CREATE ,new GroupEvent($group));
             return $this->view($group, 200);
         }
         return $this->view($form, 400);
@@ -50,14 +74,32 @@ class GroupController extends FOSRestController
     /**
      * @param UserGroup $user
      *
-     * @return \FOS\RestBundle\View\View
+     * @return Response
      * @Rest\View(serializerGroups={"user_group"})
      * @Rest\Get("/{id}/", name="_info")
      */
-    public function getUserAction(UserGroup $user)
+    public function getGrouAction($id)
     {
-        $view = $this->view($user, 200);
-        return $view;
+        $groupService = $this->get('api.service.group_service');
+        if ($this->getParameter('app.use_cache')) {
+            $cacheItem = $this->get('app.cache')->getItem($groupService->getUserCacheKey($id));
+            if ($cacheItem->isHit()) {
+                return new Response($cacheItem->get());
+            }
+        }
+        $group = $this->get('api.user_group_repository')->find($id);
+        if (empty($group)) {
+            return new JsonResponse(['message' => 'Group not found'], 404);
+        }
+        $view = $this->view($group, 200);
+        $response = $this->handleView($view);
+        if ($this->getParameter('app.use_cache')) {
+            $cacheItem->set($response->getContent())
+                ->expiresAfter($this->getParameter('app.cache_ttl'));
+            $this->get('app.cache')->save($cacheItem);
+        }
+
+        return $response;
     }
 
     /**
@@ -67,7 +109,7 @@ class GroupController extends FOSRestController
      * @Rest\View(serializerGroups={"user_group"})
      * @Rest\Patch("/{id}/", name="_update")
      */
-    public function postUserAction(UserGroup $group)
+    public function postGroupAction(UserGroup $group)
     {
         $form = $this->createForm(UserGroupType::class,$group);
 
@@ -81,6 +123,7 @@ class GroupController extends FOSRestController
             $em = $this->getDoctrine()->getManager();
             $em->persist($group);
             $em->flush();
+            $this->get('event_dispatcher')->dispatch(GroupEvents::AFTER_GROUP_UPDATE ,new GroupEvent($group));
             return $this->view($group, 200);
         }
         return $this->view($form, 400);
