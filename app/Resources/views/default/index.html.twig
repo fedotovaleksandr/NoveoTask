@@ -38,7 +38,13 @@
                     Read the documentation to learn
                     <a href="http://symfony.com/doc/{{ constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION')[:3] }}/page_creation.html">
                         How to create your first page in Symfony
+
                     </a>
+
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    <button type="submit" >go</button>
+                    {{ form_end(form) }}
                 </p>
             </div>
 

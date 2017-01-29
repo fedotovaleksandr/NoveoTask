@@ -31,7 +31,7 @@ class UserGroup
 
     /**
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="User", mappedBy="groups",cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="User", mappedBy="groups",indexBy="id",cascade={"persist"})
      */
     private $users;
 
@@ -85,7 +85,15 @@ class UserGroup
             $this->users->add($user);
         }
         if (!$user->getGroups()->contains($this)) {
-            $user->addToGroup($this);
+            $user->addGroup($this);
+        }
+        return $this;
+    }
+
+    public function addUsers($users)
+    {
+        foreach ($users as $user) {
+            $this->addUser($user);
         }
         return $this;
     }
@@ -96,6 +104,51 @@ class UserGroup
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * @param array $users
+     *
+     * @return $this
+     */
+    public function setUsers($users)
+    {
+        if (empty($groups)){
+            return $this;
+        }
+        if (is_array($users)){
+            $users = new ArrayCollection($users);
+        }
+
+        foreach($this->users as $id => $user) {
+            if(!$users->contains($user)) {
+                //remove from old because it doesn't exist in new
+                $this->removeUser($user);
+            }
+            else {
+                //the user already exists do not overwrite
+                $users->removeElement($user);
+            }
+        }
+        //add products that exist in new but not in old
+        $this->addUsers($users);
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+
+    public function removeUser(User $user)
+    {
+        if ($this->users->contains($user)) {
+            $this->users->removeElement($user);
+        }
+        if ($user->getGroups()->contains($this)) {
+            $user->removeGroup($this);
+        }
+        return $this;
     }
 
 }

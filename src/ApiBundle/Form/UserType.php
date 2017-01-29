@@ -3,12 +3,12 @@
 namespace ApiBundle\Form;
 
 use ApiBundle\Entity\User;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use ApiBundle\Entity\UserGroup;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,57 +19,61 @@ class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email',EmailType::class,[
-            'constraints'=>[
+        $builder->add('email', EmailType::class, [
+            'constraints' => [
                 new Constrains\Length([
-                    'max'=>256,
-                    'maxMessage'=>'Mail max lenght only 255 symbols'
+                    'max' => 256,
+                    'maxMessage' => 'Mail max lenght only 255 symbols'
                 ])
             ]
 
         ])
-            ->add('lastName',TextType::class,[
+            ->add('lastName', TextType::class, [
                 'required' => 1,
-                'constraints'=>[
-                new Constrains\Length([
-                    'max'=>256,
-                    'maxMessage'=>'Mail max lenght only 255 symbols'
-                ])
-            ]])
-            ->add('firstName',TextType::class,[
-                'required' => 1,
-                'constraints'=>[
+                'constraints' => [
                     new Constrains\Length([
-                        'max'=>256,
-                        'maxMessage'=>'Mail max lenght only 255 symbols'
+                        'max' => 256,
+                        'maxMessage' => 'Mail max lenght only 255 symbols'
                     ])
                 ]])
-            ->add('firstName',TextType::class,[
+            ->add('firstName', TextType::class, [
                 'required' => 1,
-                'constraints'=>[
+                'constraints' => [
                     new Constrains\Length([
-                        'max'=>256,
-                        'maxMessage'=>'Mail max lenght only 255 symbols'
+                        'max' => 256,
+                        'maxMessage' => 'Mail max lenght only 255 symbols'
                     ])
                 ]])
-            ->add('state',CheckboxType::class,[
-                'constraints'=>[
-                    ]
-                ])
-            ->add('creationDate',DateTimeType::class,[
-                'widget' => 'single_text',
-                'format' => DateTimeType::HTML5_FORMAT
-
+            ->add('firstName', TextType::class, [
+                'required' => 1,
+                'constraints' => [
+                    new Constrains\Length([
+                        'max' => 256,
+                        'maxMessage' => 'Mail max lenght only 255 symbols'
+                    ])
+                ]])
+            ->add('state', BooleanType::class, [
+                'required' => 0,
             ])
-            ->add('groups',EntityType::class,[
-                'class' => 'ApiBundle:UserGroup'
+            ->add('creationDate', DateTimeType::class, [
+                'invalid_message' => "Format date " . \DateTime::ATOM,
+                'required' => false,
+                'widget' => 'single_text',
+                'format' => \DateTime::ATOM,
+                'date_format' => \DateTime::ATOM
+            ])
+            ->add('groups', EntityType::class, [
+                'class'=>UserGroup::class,
+                'invalid_message'=>"values must be integer or Some of groups not found"
             ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class'=>User::class
+            'data_class' => User::class,
+            'csrf_protection' => false,
         ]);
     }
 

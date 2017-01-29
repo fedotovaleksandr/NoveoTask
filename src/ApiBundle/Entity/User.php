@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="ApiBundle\Repository\UserRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class User
 {
@@ -49,7 +50,7 @@ class User
      *
      * @ORM\Column(name="state", type="boolean" , options={"default" : false})
      */
-    private $state=false;
+    private $state = false;
 
     /**
      * @var \DateTime
@@ -61,7 +62,7 @@ class User
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="UserGroup", inversedBy="users",cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="UserGroup", inversedBy="users", indexBy="id",cascade={"persist"})
      * @ORM\JoinTable(name="users_groups")
      */
     private $groups;
@@ -213,7 +214,7 @@ class User
         return $this->groups;
     }
 
-    public function addToGroup(UserGroup $group)
+    public function addGroup(UserGroup $group)
     {
         if (!$this->groups->contains($group)) {
             $this->groups->add($group);
@@ -224,5 +225,64 @@ class User
         return $this;
     }
 
+    public function removeGroup(UserGroup $group)
+    {
+        if ($this->groups->contains($group)) {
+            $this->groups->removeElement($group);
+        }
+        if ($group->getUsers()->contains($this)) {
+            $group->removeUser($this);
+        }
+        return $this;
+    }
+
+    public function addGroups($groups)
+    {
+        foreach ($groups as $group) {
+            $this->addGroup($group);
+        }
+        return $this;
+    }
+
+    /**
+     * @param ArrayCollection $groups
+     *
+     * @return $this
+     */
+    public function setGroups($groups)
+    {
+        if (empty($groups)){
+            return $this;
+        }
+        if (is_array($groups)){
+            $groups = new ArrayCollection($groups);
+        }
+        foreach($this->groups as $id => $group) {
+            if(!$groups->contains($group)) {
+                //remove from old because it doesn't exist in new
+                $this->removeGroup($group);
+            }
+            else {
+                //the group already exists do not overwrite
+                $groups->removeElement($group);
+            }
+        }
+        //add products that exist in new but not in old
+        $this->addGroups($groups);
+        return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function onPrePersist()
+    {
+        //assign bi directional
+        if (empty($this->creationDate)){
+            $this->creationDate = new \DateTime("now");
+        }
+    }
+
+    public function toApiFormat(){}
 }
 

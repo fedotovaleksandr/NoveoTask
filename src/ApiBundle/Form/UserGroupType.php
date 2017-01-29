@@ -2,6 +2,7 @@
 
 namespace ApiBundle\Form;
 
+use ApiBundle\Entity\User;
 use ApiBundle\Entity\UserGroup;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,15 +27,17 @@ class UserGroupType extends AbstractType
                         'maxMessage'=>'Mail max lenght only 255 symbols'
                     ])
                 ]])
-            ->add('users',EntityType::class,[
-                'class' => 'ApiBundle:User'
+            ->add('groups', EntityType::class, [
+                'class'=>User::class,
+                'invalid_message'=>"values must be integer or Some of users not found"
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class'=>UserGroup::class
+            'data_class'=>UserGroup::class,
+            'csrf_protection'=>false
         ]);
     }
 

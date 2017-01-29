@@ -2,3 +2,18 @@ services:
 #    api.example:
 #        class: ApiBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
+    api.user_repository:
+            class: Doctrine\ORM\EntityRepository
+            factory: ['@doctrine.orm.default_entity_manager', getRepository]
+            arguments:
+                - ApiBundle\Entity\User
+    api.user_group_repository:
+            class: Doctrine\ORM\EntityRepository
+            factory: ['@doctrine.orm.default_entity_manager', getRepository]
+            arguments:
+                - ApiBundle\Entity\UserGroup
+    api.form.type.entity:
+            class: ApiBundle\Form\EntityType
+            arguments: ['@doctrine.orm.entity_manager']
+            tags:
+                - { name: form.type, alias: entity }
