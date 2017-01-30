@@ -38,3 +38,8 @@ RUN echo 'alias sf3="php bin/console"' >> ~/.bashrc
 VOLUME /var/www/symfony
 
 WORKDIR /var/www/symfony
+RUN rm -rf /var/www/symfony/vendor
+RUN rm -rf /var/www/symfony/var
+
+RUN chown -R www-data:www-data /var/www/symfony
+USER www-data

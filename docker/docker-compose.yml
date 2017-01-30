@@ -20,7 +20,7 @@ services:
     nginx:
         build: nginx
         ports:
-            - 80:80
+            - 8042:80
         volumes_from:
             - php
         volumes:

@@ -7,8 +7,8 @@ services:
     app.redis:
         class: Redis
         calls:
-            - [connect, ["%redis.host%", "%redis.port%"]]
-            - [select, ["%redis.db_number%"]]
+            - [connect, ['%redis.host%', '%redis.port%']]
+            - [select, ['%redis.db_number%']]
 
     app.redis.adapter:
         class: Symfony\Component\Cache\Adapter\RedisAdapter
