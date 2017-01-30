@@ -4,12 +4,12 @@ NoveoTask
 ##Docker deploy 
 https://github.com/fedotovaleksandr/NoveoTask/blob/master/docker/README.md
 
--build containers ```bash docker-compose build --force-rm --no-cache```
--create db ```bash docker-compose  exec php php /var/www/symfony/bin/console doctrine:database:create```
--create/update schema ```bash docker-compose  exec php php /var/www/symfony/bin/console doctrine:schema:update ```
--load fixtures ```bash docker-compose  exec php php /var/www/symfony/bin/console doctrine:fixture:load  ```
--clear cache```bash docker-compose  exec php php /var/www/symfony/bin/console cache:clear```
--run tests ```bash docker-compose  exec php bash /var/www/symfony/vendor/bin/phpunit```
+- build containers ```bash docker-compose build --force-rm --no-cache```
+- create db ```bash docker-compose  exec php php /var/www/symfony/bin/console doctrine:database:create```
+- create/update schema ```bash docker-compose  exec php php /var/www/symfony/bin/console doctrine:schema:update ```
+- load fixtures ```bash docker-compose  exec php php /var/www/symfony/bin/console doctrine:fixture:load  ```
+- clear cache```bash docker-compose  exec php php /var/www/symfony/bin/console cache:clear```
+- run tests ```bash docker-compose  exec php bash /var/www/symfony/vendor/bin/phpunit```
 
 ##Quick Start
 - create database ```doctrine:schema:create``` 
