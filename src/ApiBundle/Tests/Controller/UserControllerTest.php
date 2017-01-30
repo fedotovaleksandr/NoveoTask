@@ -90,7 +90,7 @@ class UserControllerTest extends WebTestCase
         $this->assertEquals($client->getResponse()->getStatusCode(), 200, 'Assert status code');
         $this->assertUserData($data);
         if (!empty($userData['groups'])) {
-            $this->assertEquals(array_column($data['groups'], 'id'), $userData['groups'], 'AssertGroups Set');
+            $this->assertEquals(sort(array_column($data['groups'], 'id')),sort( $userData['groups']), 'AssertGroups Set');
         } else {
             $this->assertEquals($data['groups'], [], 'AssertGroups Set');
         }

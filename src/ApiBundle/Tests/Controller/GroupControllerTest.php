@@ -88,7 +88,7 @@ class GroupControllerTest extends WebTestCase
         $this->assertEquals($client->getResponse()->getStatusCode(), 200, 'Assert status code');
         $this->assertGroupData($data);
         if (!empty($groupData['users'])) {
-            $this->assertEquals(array_column($data['users'], 'id'), $groupData['users'], 'AssertUserss Set');
+            $this->assertEquals(sort(array_column($data['users'], 'id')), sort($groupData['users']), 'AssertUserss Set');
         } else {
             $this->assertEquals($data['users'], [], 'AssertGroups Set');
         }

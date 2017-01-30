@@ -18,7 +18,9 @@ RUN "date"
 
 # Type docker-php-ext-install to see available extensions
 RUN docker-php-ext-install pdo pdo_mysql
-
+# redis
+RUN  git clone -b php7 https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis \
+     && docker-php-ext-install redis
 
 # install xdebug
 RUN pecl install xdebug
@@ -38,8 +40,7 @@ RUN echo 'alias sf3="php bin/console"' >> ~/.bashrc
 VOLUME /var/www/symfony
 
 WORKDIR /var/www/symfony
-RUN rm -rf /var/www/symfony/vendor
-RUN rm -rf /var/www/symfony/var
 
-RUN chown -R www-data:www-data /var/www/symfony
+RUN chown -R :www-data /var/www/symfony
+RUN chmod -R g+rwx /var/www/symfony
 USER www-data
