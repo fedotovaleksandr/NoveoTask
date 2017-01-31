@@ -11,6 +11,12 @@ https://github.com/fedotovaleksandr/NoveoTask/blob/master/docker/README.md
 - clear cache```bash docker-compose  exec php php /var/www/symfony/bin/console cache:clear```
 - run tests ```bash docker-compose  exec php bash /var/www/symfony/vendor/bin/phpunit```
 
+####Also you can use docker/deploy.sh 
+
+run on http://symfony.dev:8042/
+
+
+
 ##Quick Start
 - create database ```doctrine:schema:create``` 
 - load fixture to dev database  ```doctrine:fixtures:load  ```
@@ -30,6 +36,8 @@ I do not have time to do some important feaures:
 - Also test for check form constrains
 
 ##Small Description of api methods
+* With 'Accept' - header you can choose xml or json response
+
 ####GET /api/v1/users/fetch 
 fetch all users
 ####POST /api/v1/users/create 
