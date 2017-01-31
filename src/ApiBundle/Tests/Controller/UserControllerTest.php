@@ -44,7 +44,8 @@ class UserControllerTest extends WebTestCase
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals($client->getResponse()->getStatusCode(), 200, 'Assert status code');
         $this->assertUserData($data);
-        $this->assertEquals(array_column($data['groups'], 'id'), $userData['groups'], 'AssertGroups Set');
+        $ids = array_column($data['groups'], 'id');
+        $this->assertEquals(sort($ids), sort($userData['groups']), 'AssertGroups Set');
         $this->assertArrayHasKey('id', $data);
         $this->assertNotEmpty(self::$kernel->getContainer()->get('api.user_repository')->findOneBy(['id' => $data['id']]));
 
@@ -90,7 +91,8 @@ class UserControllerTest extends WebTestCase
         $this->assertEquals($client->getResponse()->getStatusCode(), 200, 'Assert status code');
         $this->assertUserData($data);
         if (!empty($userData['groups'])) {
-            $this->assertEquals(sort(array_column($data['groups'], 'id')),sort( $userData['groups']), 'AssertGroups Set');
+            $ids = array_column($data['groups'], 'id');
+            $this->assertEquals(sort($ids), sort($userData['groups']), 'AssertGroups Set');
         } else {
             $this->assertEquals($data['groups'], [], 'AssertGroups Set');
         }

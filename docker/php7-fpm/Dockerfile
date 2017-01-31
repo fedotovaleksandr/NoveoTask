@@ -43,4 +43,5 @@ WORKDIR /var/www/symfony
 
 RUN chown -R :www-data /var/www/symfony
 RUN chmod -R g+rwx /var/www/symfony
+RUN chown -R www-data:www-data /var/www/symfony/var
 USER www-data
